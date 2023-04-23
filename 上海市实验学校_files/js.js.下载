@@ -1,0 +1,256 @@
+﻿setInterval(function() {
+	var length = $('.header_side').children().length 
+	var bwidth = document.body.clientWidth 
+	// console.log(bwidth)
+	var width = 1180 / length + 'px'
+	var width2 = (1180 / length) * 1.7 + 'px'
+	// console.log(width2)
+	if (bwidth > 1262) {
+		$('.header_side li').css('width', width)
+		$('.header_side_list').css('width', width2)
+		$('.header_side_list li').css('width', width2)
+	}
+	var imgw = $('.footer_img li').width()
+	$('.footer_img li').css('height', imgw)
+
+	var noimgw = $('.imgimg').width()
+	var noimgh = noimgw * .75 + 'px'
+	$('.imgimg').css('height', noimgh)
+
+	if (bwidth < 1262) { 
+		$('.search').css('display', 'none')
+		$('#search').css('display', 'none')
+	}
+
+	// var display = $('.search').css('display')
+	// console.log(display)
+	// if(display == 'inline-block'){
+ //   		$('header').mouseup(function() {
+ //   			// console.log('1212')
+ //   			$('.search').css('display', 'none')
+ //   			if (bwitch > 1262) {
+ //   				$('.header_top').css('margin-left', '-50%')
+ //   			}
+ //   		})
+ //   		$('.search').mousedown(function() {
+ //   			console.log('asd')
+ //   			setTimeout(function() {
+ //   				$('.search').focus()
+ //   			}, 500)
+ //   		})
+	// }
+
+
+
+
+	// 模块
+	var linklength = $('.section_link').children().length
+	if (linklength == 9) {
+		$('.section_link li').css('width', '11.1%')
+		$('.section_link li a img').css('left', '31%')
+		if (bwidth < 750) {
+			$('.section_link li').css('width', '33.3%')
+			$('.section_link li a img').css('width', '30%').css('left', '35%')
+		}
+	}
+	if (linklength == 8) {
+		$('.section_link li').css('width', '12.5%')
+		$('.section_link li a img').css('left', '31%')
+		if (bwidth < 750) {
+			$('.section_link li').css('width', '33.3%')
+			$('.section_link li a img').css('width', '30%').css('left', '35%')
+		}
+	}
+	if (linklength == 7) {
+		$('.section_link li').css('width', '14.28%')
+		$('.section_link li a img').css('left', '36%')
+		if (bwidth < 750) {
+			$('.section_link li').css('width', '33.3%')
+			$('.section_link li a img').css('width', '30%').css('left', '35%')
+		}
+	}
+	if (linklength == 6) {
+		$('.section_link li').css('width', '16.6%')
+		$('.section_link li a img').css('left', '37%')
+		if (bwidth < 750) {
+			$('.section_link li').css('width', '33.3%')
+			$('.section_link li a img').css('width', '30%').css('left', '35%')
+		}
+	}
+})
+var display = 0
+function search() {
+	// alert('search')
+	setTimeout(function() {
+		$('.search').css('display', 'inline-block')
+		// $('.search').focus()
+		display = 1
+	})
+	
+	// $('.header_top').css('margin-left', '.5%')
+}	
+// $('header').click(function() {
+// 	// alert('header')
+// 	if (display == 1) {
+// 		$('.search').css('display', 'none')
+//    			if (bwitch > 1262) {
+//    				$('.header_top').css('margin-left', '-50%')
+//    			}
+// 	}
+// })
+function login() {
+   $("#gotourl").val("");
+	$('.login2').css('display', 'block');
+}
+function cha() {
+	$('.login2').css('display', 'none');
+}
+var isshow = 0
+function msearch() {
+	if (isshow == 0) {
+		$('.header_mobile_search2').css('display', 'inline-block')
+		$('section').css('margin-top', '18px')
+		setTimeout(function() {
+			var width = $('header').width()
+			// console.log(width)
+			if (width > 768) {
+				$('section').css('margin-top', '0px')
+			} else {
+				$('section').css('margin-top', '18px')
+			}
+		})
+		isshow = 1
+	} else {
+		$('.header_mobile_search2').css('display', 'none')
+		setTimeout(function() {
+			var width = $('header').width()
+			// console.log(width)
+			if (width > 768) {
+				$('section').css('margin-top', '116px')
+			} else {
+				$('section').css('margin-top', '85px')
+			}
+		})
+		var nKeyWord = $("#txtSearch2").val();
+		if (nKeyWord != "") {
+			if (nKeyWord == "请输入搜索内容") {
+				nKeyWord = "";
+			}
+			nKeyWord = nKeyWord.replace('onmouseover', '');
+			nKeyWord = nKeyWord.replace("script", "");
+			nKeyWord = nKeyWord.replace("onload", "");
+			nKeyWord = nKeyWord.replace("onmouseover", "");
+			nKeyWord = nKeyWord.replace("iframe ", "");
+			nKeyWord = nKeyWord.replace("src", "");
+			nKeyWord = nKeyWord.replace("window.open", "");
+			nKeyWord = nKeyWord.replace("and", "");
+			nKeyWord = nKeyWord.replace("or", "");
+
+			var pattern = "[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]%()+";
+			var rs = "";
+
+			for (var i = 0; i < nKeyWord.length; i++) {
+				var pass = nKeyWord.substring(i, i + 1);
+
+				if (pattern.indexOf(pass) > 0) {
+					rs = rs + nKeyWord.substring(i, i + 1).replace(pass, "");
+
+				} else {
+					rs = rs + nKeyWord.substring(i, i + 1);
+
+				}
+			}
+			nKeyWord = rs;
+			window.location.href = "search.aspx?KeyWord=" + nKeyWord + "&SiteID=<%=nSiteID %>&SubjectID=<%=nSubjectID %>";
+		}
+		$("#txtSearch2").val('');
+		isshow = 0;
+	}
+}
+
+$('.header_nav_language').click(function() {
+	$('.language').toggle()
+})
+
+
+var ggRoll1 = {
+	roll: document.getElementById("ad1"),
+	speed: 20,
+	statusX: 1,
+	statusY: 1,
+	x: 100,
+	y: 300,
+	winW: document.documentElement.clientWidth - document.getElementById("ad1").offsetWidth,
+	winH: document.documentElement.clientHeight - document.getElementById("ad1").offsetHeight,
+	Go: function () {
+		this.roll.style.left = this.x + 'px';
+		this.roll.style.top = this.y + 'px';
+		this.x = this.x + (this.statusX ? -1 : 1)
+		if (this.x < 0) { this.statusX = 0 }
+		if (this.x > this.winW) { this.statusX = 1 }
+		this.y = this.y + (this.statusY ? -1 : 1)
+		if (this.y < 0) { this.statusY = 0 }
+		if (this.y > this.winH) { this.statusY = 1 }
+	}
+}
+var interval1 = setInterval("ggRoll1.Go()", ggRoll1.speed);
+ggRoll1.roll.onmouseover = function () { clearInterval(interval1) };
+ggRoll1.roll.onmouseout = function () { interval1 = setInterval("ggRoll1.Go()", ggRoll1.speed) };
+$('#ad1 .cs').click(function() {
+	$('#ad1').css('display', 'none')
+})
+
+var ggRoll2 = {
+	roll: document.getElementById("ad2"),
+	speed: 20,
+	statusX: 1,
+	statusY: 1,
+	x: 900,
+	y: 100,
+	winW: document.documentElement.clientWidth - document.getElementById("ad2").offsetWidth,
+	winH: document.documentElement.clientHeight - document.getElementById("ad2").offsetHeight,
+	Go: function () {
+		this.roll.style.left = this.x + 'px';
+		this.roll.style.top = this.y + 'px';
+		this.x = this.x + (this.statusX ? -1 : 1)
+		if (this.x < 0) { this.statusX = 0 }
+		if (this.x > this.winW) { this.statusX = 1 }
+		this.y = this.y + (this.statusY ? -1 : 1)
+		if (this.y < 0) { this.statusY = 0 }
+		if (this.y > this.winH) { this.statusY = 1 }
+	}
+}
+var interval2 = setInterval("ggRoll2.Go()", ggRoll2.speed);
+ggRoll2.roll.onmouseover = function () { clearInterval(interval2) };
+ggRoll2.roll.onmouseout = function () { interval2 = setInterval("ggRoll2.Go()", ggRoll2.speed) };
+$('#ad2 .cs').click(function() {
+	$('#ad2').css('display', 'none')
+})
+
+var ggRoll3 = {
+	roll: document.getElementById("ad3"),
+	speed: 20,
+	statusX: 1,
+	statusY: 1,
+	x: 500,
+	y: 500,
+	winW: document.documentElement.clientWidth - document.getElementById("ad3").offsetWidth,
+	winH: document.documentElement.clientHeight - document.getElementById("ad3").offsetHeight,
+	Go: function () {
+		this.roll.style.left = this.x + 'px';
+		this.roll.style.top = this.y + 'px';
+		this.x = this.x + (this.statusX ? -1 : 1)
+		if (this.x < 0) { this.statusX = 0 }
+		if (this.x > this.winW) { this.statusX = 1 }
+		this.y = this.y + (this.statusY ? -1 : 1)
+		if (this.y < 0) { this.statusY = 0 }
+		if (this.y > this.winH) { this.statusY = 1 }
+	}
+}
+var interval3 = setInterval("ggRoll3.Go()", ggRoll3.speed);
+ggRoll3.roll.onmouseover = function () { clearInterval(interval3) };
+ggRoll3.roll.onmouseout = function () { interval3 = setInterval("ggRoll3.Go()", ggRoll3.speed) };
+$('#ad3 .cs').click(function() {
+	$('#ad3').css('display', 'none')
+})
+

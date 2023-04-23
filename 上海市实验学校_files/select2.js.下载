@@ -1,0 +1,29 @@
+function getByClass(parentEl, sClass) {
+  var els = parentEl.getElementsByTagName('*')
+  var result = []
+  for (var i = 0; i < els.length; i++) {
+    var arr = els[i].className.replace(/(^\s+)|(\s+$)/).split(/\s+/g)
+    for (var j = 0; j < arr.length; j++) {
+      if (arr[j] == sClass) {
+        result.push(els[i])
+      }
+    }
+  }
+  return result
+}
+var tabTitle2 = getByClass(document, 'section_pub_con_tab2')[0]
+var tabCon2 = getByClass(document, 'section_pub_con_content2')[0]
+var btns2 = tabTitle2.children
+var cons2 = tabCon2.children
+
+for (var i = 0; i < btns2.length; i++) {
+  btns2[i].index = i
+  btns2[i].onclick = function(e) {
+    for (var i = 0; i < cons2.length; i++) {
+      btns2[i].className = 'btns'
+      cons2[i].style.display = 'none'
+    }
+    cons2[this.index].style.display = 'block'
+    this.className = 'btns on'
+  }
+}

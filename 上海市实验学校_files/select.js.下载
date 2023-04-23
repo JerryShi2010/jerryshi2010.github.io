@@ -1,0 +1,29 @@
+function getByClass(parentEl, sClass) {
+  var els = parentEl.getElementsByTagName('*')
+  var result = []
+  for (var i = 0; i < els.length; i++) {
+    var arr = els[i].className.replace(/(^\s+)|(\s+$)/).split(/\s+/g)
+    for (var j = 0; j < arr.length; j++) {
+      if (arr[j] == sClass) {
+        result.push(els[i])
+      }
+    }
+  }
+  return result
+}
+var tabTitle = getByClass(document, 'section_pub_con_tab1')[0]
+var tabCon = getByClass(document, 'section_pub_con_content1')[0]
+var btns = tabTitle.children
+var cons = tabCon.children
+
+for (var i = 0; i < btns.length; i++) {
+  btns[i].index = i
+  btns[i].onclick = function(e) {
+    for (var i = 0; i < cons.length; i++) {
+      btns[i].className = 'btns'
+      cons[i].style.display = 'none'
+    }
+    cons[this.index].style.display = 'block'
+    this.className = 'btns on'
+  }
+}

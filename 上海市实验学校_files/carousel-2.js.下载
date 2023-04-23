@@ -1,0 +1,116 @@
+﻿$('.header_carousel').each(function() {
+  var carousel = $(this)
+  var ul = carousel.find('ul')
+  var lis = ul.children()
+  var btnBox = carousel.find('.btn_box')
+  var btns = btnBox.children()
+  var btnPrev = carousel.find('.prev')
+  var btnNext = carousel.find('.next')
+
+  var iLeft = 0
+  var curIndex = 0
+  var timerRun = 0
+  var timerAutoplay = 0
+
+  $(window).off('resize.carousel').on('resize.carousel', function(e) {
+     iLeft = -curIndex * carousel.width()
+  })
+
+  carousel.on('mouseenter', function(e) {
+    clearInterval(timerAutoplay)
+  }).on('mouseleave', function() {
+    autoPlay()
+  })
+
+  ul.append(lis.eq(0).clone(true))
+  lis.eq(0).clone(true).appendTo(ul)
+
+  btnPrev.on('click', function(e) {
+    curIndex--
+    setState()
+  }).on('mousedown', function(e) {
+    e.stopPropagation()
+  })
+
+  btnNext.on('click', function(e) {
+    curIndex++
+    setState()
+  }).on('mousedown', function(e) {
+    e.stopPropagation()
+  })
+
+  btns.on('click', function(e) {
+    var index = $(this).index()
+    var _curIndex = (curIndex % btns.length + btns.length) % btns.length
+    curIndex -= _curIndex
+    curIndex += index
+    setState()
+  })
+
+  carousel.on('mousedown touchstart', function(e) {
+    e.preventDefault()
+    clearInterval(timerRun)
+    var _e = e.originalEvent
+    var isPC = 'clientX' in _e
+    var x1 = isPC ? e.clientX : _e.targetTouches[0].clientX
+    var originX = iLeft
+
+    var ulWidth = btns.length * carousel.width()
+    var elActive = $(isPC ? document : this)
+    elActive.on(isPC ? 'mousemove.carousel' : 'touchmove.carousel', function(e) {
+      var _e = e.originalEvent
+      var x2 = isPC ? e.clientX : _e.targetTouches[0].clientX
+      iLeft = x2 - x1 + originX
+      ul.css({
+        left: (iLeft % ulWidth - ulWidth) % ulWidth + 'px'
+      })
+    })
+    elActive.on('mouseup.carousel touchend.carousel', function(e) {
+      elActive.off('mousemove.carousel touchmove.carousel mouseup.carousel touchend.carousel')
+      var _e = e.originalEvent
+      var x3 = isPC ? e.clientX : _e.changedTouches[0].clientX
+      var dis = x3 - x1
+      var href = e.target.getAttribute('href')
+      if (dis == 0 && href) {
+        location.href = href
+      }
+      if (Math.abs(dis) > 10) {
+        dis > 0 ? curIndex-- : curIndex++
+      }
+      setState()
+    })
+  })
+
+  function setState() {
+    var _curIndex = (curIndex % btns.length + btns.length) % btns.length
+    btns.removeClass('on').eq(_curIndex).addClass('on')
+
+    var targetVal = -curIndex * carousel.width()
+    clearInterval(timerRun)
+    timerRun = setInterval(function() {
+      var speed = (targetVal - iLeft) / 10
+      speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed)
+      iLeft += speed
+      var ulWidth = btns.length * carousel.width()
+      console.log(iLeft, ulWidth)
+      ul.css({
+        left: Math.round((iLeft % ulWidth - ulWidth) % ulWidth) + 'px'
+      })
+      if (speed == 0) {
+        clearInterval(timerRun)
+        ul.css({
+          left: -_curIndex * 100 + '%'
+        })
+      }
+    }, 1000 / 60)
+  }
+
+  autoPlay()
+  function autoPlay() {
+    clearInterval(timerAutoplay)
+    timerAutoplay = setInterval(function() {
+      curIndex++
+      setState()
+    }, 5000)
+  }
+})

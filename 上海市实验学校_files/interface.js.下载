@@ -1,0 +1,133 @@
+﻿function CheckUserOnline(oShowDialog)
+{
+    var xmlHttp=new xmlHTTP();
+    xmlHttp.Load(AppPath()+"BasePlate/Interface/ICheckWS.asmx/CheckOnline",false,"GET",null);
+	
+    oNode = xmlHttp.responseXML.selectSingleNode("/Goodo");
+    if(oNode==null||oNode.getAttribute("Return").toLowerCase()=="false") 
+    {
+        if(oShowDialog!=0)//1 or null
+        {
+            var oUrl=AppPath()+"BasePlate/ModalDialog.aspx?path="+AppPath()+"BasePlate/LoginCenter/ReLogin.aspx&Title=用户信息丢失,请重新登陆";
+            showModalDialog(oUrl, "", "scroll=no; status=no; help=no; center=yes;dialogWidth=400px; dialogHeight=230px;");
+            //location.reload();//重新加载页面
+        }
+        return false;
+    }
+    return true;
+}
+function GetMenu()
+{    
+    var xmlHttp=new xmlHTTP();
+    xmlHttp.Load(AppPath()+"BasePlate/Interface/IInterfaceWS.asmx/Menu_GetListXD",false,"GET",null);
+    if(xmlHttp.responseXML==null||xmlHttp.responseXML.documentElement==null)
+    {
+        alert("BasePlate/Interface/IInterfaceWS.asmx/Menu_GetListXD加载数据错误！\n"+xmlHttp.responseText);
+        return null;
+    }
+    return xmlHttp.responseXML;
+}
+function GetNavigate(I)
+{
+    var xmlPost=xmlHTTP.CreateXMLDoc();
+    xmlPost.loadXML(xmlHTTP.xmlHead+"<Goodo ModuleID=\""+I+"\"/>");
+    
+    var xmlHttp=new xmlHTTP();
+    xmlHttp.Load(AppPath()+"BasePlate/Interface/IRightWS.asmx/ModuleInfoGet2",false,"Post",xmlPost.xml);
+    if(xmlHttp.responseXML==null||xmlHttp.responseXML.documentElement==null)
+    {
+        alert("xml加载数据错误！\n"+xmlHttp.responseText);
+        return null;
+    }
+    return xmlHttp.responseXML;
+}
+
+function GettiSet(oIndex)
+{
+    var otiSet = GetCookies("tiSet").split(":");
+    if(otiSet.length>oIndex)
+    {
+        return otiSet[oIndex];
+    }
+    return "0";
+}
+function GetbSet(oIndex)
+{
+    var obSet = GetCookies("bSet").split(":");
+    if(obSet.length>oIndex)
+    {
+        if(obSet[oIndex].toLowerCase() =="false")
+        {
+            return false;
+        }
+    }
+    return true;
+}
+function Face()
+{//脸CSS
+    var oFace=GettiSet(0);
+    if(oFace.length<=0 || oFace-0<3)oFace=3;
+    return oFace;
+}
+function ColorStyle()
+{//颜色CSS
+    return "Face/"+Face()+"/CSS/color/style_base"+GettiSet(1)+".css";
+}
+function PageSize()
+{//每页记录条数
+    var oSize = GettiSet(2) ;
+    if(oSize < 5)//最少每页显示5条
+    {
+        oSize=10;
+    }
+    return oSize;
+}
+function NavStyle()
+{//导航CSS
+    return "Face/"+Face()+"/CSS/size/style_nav"+GettiSet(3)+".css";
+}
+function TitleStyle()
+{//标题CSS
+    return "Face/"+Face()+"/CSS/size/style_text"+GettiSet(4)+".css";
+}
+function TextStyle()
+{//文本CSS
+    return "Face/"+Face()+"/CSS/size/style_text"+GettiSet(5)+".css";
+}
+function ScreenSize()
+{//返回值为页面文件后缀数字
+    return GettiSet(6);
+}
+function PagerMode()
+{//true数字翻页，false上下页
+    return GetbSet(0);
+}
+function loginSubmitCheck()
+{
+    var oLoginID=$("input[type='text'][name$='LoginID']");
+    var oPwd=$("input[type='password'][name$='Password']");
+    var oEnpwd=$("input[type='hidden'][name$='EnPassword']");
+    var oKey=$("span[id$='LoginKey']");
+    var oToken=$("input[type='hidden'][name$='CSRFToken']");
+    if(oLoginID.length<=0 || oPwd.length<=0 || oEnpwd.length<=0 || oKey.length<=0)
+    {
+        alert("请检查控件名称！");
+        return false;
+    }    
+    
+    var strPlain=oLoginID.val()+","+oPwd.val()+","+oKey.text();
+    if(oToken.length<=0)strPlain=oPwd.val()+","+oKey.text();
+    if(strPlain.length>=117)
+    {
+        alert("长度超过了限制！");
+        return false;
+    }
+    
+    setMaxDigits(129);
+    var key = new RSAKeyPair("010001", "", "B3D4EFD008C5D945B3FEFEA52DE4632D6D18B02D02B9F2F0D8706CD922007EFE425F4F384D0576503F228FF9073CF6F0CF25110F9231166DE38F88A91E1D53C95B5BF84CD776486E8A0954DA4F3255938D25DDA259B4238F8F91E1967EF109A1E33D80E3251BDABD1ED1B90EED5740B4EC1D2B3C5CC306C1072CEBD36B2EE367");
+
+    oEnpwd.val(encryptedString(key, strPlain));
+    oPwd.val("");
+    if(oToken.length>0)oLoginID.val("");
+    return true;
+}
